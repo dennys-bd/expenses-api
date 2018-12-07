@@ -15,7 +15,22 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.conf.urls import include
+from rest_framework import routers
+from accounts.api.v1.viewsets import AccountViewSet
+from cards.api.v1.viewsets import CardViewSet
+from incomings.api.v1.viewsets import IncomingViewSet
+from shoppings.api.v1.viewsets import CategoryViewSet, ShoppingViewSet, InstallmentViewSet
+
+router = routers.DefaultRouter()
+router.register(r'accounts', AccountViewSet)
+router.register(r'cards', CardViewSet)
+router.register(r'incomings', IncomingViewSet)
+router.register(r'categories', CategoryViewSet)
+router.register(r'shoppings', ShoppingViewSet)
+router.register(r'installments', InstallmentViewSet)
 
 urlpatterns = [
+    path('', include(router.urls)),
     path('admin/', admin.site.urls),
 ]

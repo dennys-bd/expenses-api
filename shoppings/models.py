@@ -3,6 +3,8 @@ from accounts.models import Account
 from cards.models import Card
 
 class Category(models.Model):
+    account = models.ForeignKey(Account, on_delete=models.CASCADE)
+
     name = models.CharField(max_length=25)
 
     created_at = models.DateTimeField(auto_now_add=True)
@@ -25,7 +27,6 @@ class Shopping(models.Model):
     debt_type = models.IntegerField(default=0, choices=DEBT_TYPE_CHOICES)
 
     local = models.CharField(max_length=25)
-    category = models.CharField(max_length=25)
     description = models.CharField(max_length=255, null=True, blank=True)
     date = models.DateTimeField(auto_now_add=True)
     price = models.DecimalField(decimal_places=2, max_digits=11)

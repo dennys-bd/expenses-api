@@ -14,4 +14,4 @@ class ShoppingSerializer(ModelSerializer):
 class InstallmentSerializer(ModelSerializer):
     class Meta:
         model = Installment
-        fields = ('id', '__str__')
+        fields = ('id', 'shopping')

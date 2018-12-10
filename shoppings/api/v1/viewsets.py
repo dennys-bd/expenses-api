@@ -1,15 +1,21 @@
 from rest_framework.viewsets import ModelViewSet
 from shoppings.models import Category, Shopping, Installment
-from .serializers import InstallmentSerializer
+from .serializers import CategorySerializer, ShoppingSerializer, InstallmentSerializer
 
 class CategoryViewSet(ModelViewSet):
-    queryset = Installment.objects.all()
-    serializer_class = InstallmentSerializer
+    serializer_class = CategorySerializer
+
+    def get_queryset(self):
+        return Category.objects.all()
 
 class ShoppingViewSet(ModelViewSet):
-    queryset = Installment.objects.all()
-    serializer_class = InstallmentSerializer
+    serializer_class = ShoppingSerializer
+
+    def get_queryset(self):
+        return Shopping.objects.all()
 
 class InstallmentViewSet(ModelViewSet):
-    queryset = Installment.objects.all()
     serializer_class = InstallmentSerializer
+
+    def get_queryset(self):
+        return Installment.objects.all()

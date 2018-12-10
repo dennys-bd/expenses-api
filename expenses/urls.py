@@ -23,12 +23,12 @@ from incomings.api.v1.viewsets import IncomingViewSet
 from shoppings.api.v1.viewsets import CategoryViewSet, ShoppingViewSet, InstallmentViewSet
 
 router = routers.DefaultRouter()
-router.register(r'accounts', AccountViewSet)
-router.register(r'cards', CardViewSet)
-router.register(r'incomings', IncomingViewSet)
-router.register(r'categories', CategoryViewSet)
-router.register(r'shoppings', ShoppingViewSet)
-router.register(r'installments', InstallmentViewSet)
+router.register(r'accounts', AccountViewSet, base_name='Account')
+router.register(r'cards', CardViewSet, base_name='Card')
+router.register(r'incomings', IncomingViewSet, base_name='Incoming')
+router.register(r'categories', CategoryViewSet, base_name='Category')
+router.register(r'shoppings', ShoppingViewSet, base_name='Shopping')
+router.register(r'installments', InstallmentViewSet, base_name='Installment')
 
 urlpatterns = [
     path('', include(router.urls)),

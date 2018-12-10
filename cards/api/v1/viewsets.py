@@ -3,6 +3,7 @@ from cards.models import Card
 from .serializers import CardSerializer
 
 class CardViewSet(ModelViewSet):
-    
-    queryset = Card.objects.all()
     serializer_class = CardSerializer
+
+    def get_queryset(self):
+        return Card.objects.all()

@@ -6,7 +6,7 @@ class Incoming(models.Model):
 
     name = models.CharField(max_length=25)
     value = models.DecimalField(max_digits=11, decimal_places=2)
-    description = models.CharField(max_length=255, null=False, blank=False)
+    description = models.CharField(max_length=255, null=True, blank=True)
     due_day = models.DateTimeField(auto_now_add=True)
 
     created_at = models.DateTimeField(auto_now_add=True)

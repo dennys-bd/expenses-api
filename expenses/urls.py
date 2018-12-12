@@ -17,7 +17,7 @@ from django.contrib import admin
 from django.urls import path, re_path
 from django.conf.urls import include
 from rest_framework import routers
-from rest_framework_jwt.views import obtain_jwt_token
+from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token, verify_jwt_token
 from accounts.api.v1.viewsets import AccountViewSet
 from cards.api.v1.viewsets import CardViewSet
 from incomings.api.v1.viewsets import IncomingViewSet
@@ -35,4 +35,6 @@ urlpatterns = [
     path('', include(router.urls)),
     path('admin/', admin.site.urls),
     re_path(r'^api-token-auth/', obtain_jwt_token),
+    re_path(r'^api-token-refresh/', refresh_jwt_token),
+    re_path(r'^api-token-verify/', verify_jwt_token),
 ]

@@ -1,9 +1,19 @@
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import IsAuthenticated, BasePermission
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import action, authentication_classes, permission_classes
 from django.contrib.auth.models import User
 from accounts.models import Account
 from .serializers import AccountSerializer, UserSerializer
+
+class CreateOnly(BasePermission):
+    """
+    create_only
+    """
+    def has_permission(self, request, view):
+            if view.action == 'create':
+                return True
+            else:
+                return IsAuthenticated.has_permission(self, request, view)
 
 class AccountViewSet(ModelViewSet):
     serializer_class = AccountSerializer
@@ -36,13 +46,10 @@ class AccountViewSet(ModelViewSet):
 
 class UserViewSet(ModelViewSet):
     serializer_class = UserSerializer
+    permission_classes = (CreateOnly,)
 
     def get_queryset(self):
         return User.objects.all()
-# @api_view(['POST'])    
-# @authentication_classes([])
-# @permission_classes([])
 
-    @permission_classes((AllowAny,))
-    def create(self, request, *args, **kwargs):
-        return super().create(request, *args, **kwargs)
+
+

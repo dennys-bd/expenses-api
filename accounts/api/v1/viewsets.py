@@ -1,7 +1,9 @@
+from rest_framework.permissions import AllowAny
 from rest_framework.viewsets import ModelViewSet
-from rest_framework.decorators import action
+from rest_framework.decorators import action, authentication_classes, permission_classes
+from django.contrib.auth.models import User
 from accounts.models import Account
-from .serializers import AccountSerializer
+from .serializers import AccountSerializer, UserSerializer
 
 class AccountViewSet(ModelViewSet):
     serializer_class = AccountSerializer
@@ -31,3 +33,16 @@ class AccountViewSet(ModelViewSet):
     # @action(methods=['get'], detail=False)
     # def test(self, request):
     #     pass
+
+class UserViewSet(ModelViewSet):
+    serializer_class = UserSerializer
+
+    def get_queryset(self):
+        return User.objects.all()
+# @api_view(['POST'])    
+# @authentication_classes([])
+# @permission_classes([])
+
+    @permission_classes((AllowAny,))
+    def create(self, request, *args, **kwargs):
+        return super().create(request, *args, **kwargs)

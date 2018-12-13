@@ -18,13 +18,14 @@ from django.urls import path, re_path
 from django.conf.urls import include
 from rest_framework import routers
 from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token, verify_jwt_token
-from accounts.api.v1.viewsets import AccountViewSet
+from accounts.api.v1.viewsets import AccountViewSet, UserViewSet
 from cards.api.v1.viewsets import CardViewSet
 from incomings.api.v1.viewsets import IncomingViewSet
 from shoppings.api.v1.viewsets import CategoryViewSet, ShoppingViewSet, InstallmentViewSet
 
 router = routers.DefaultRouter()
 router.register(r'accounts', AccountViewSet, base_name='Account')
+router.register(r'users', UserViewSet, base_name='User')
 router.register(r'cards', CardViewSet, base_name='Card')
 router.register(r'incomings', IncomingViewSet, base_name='Incoming')
 router.register(r'categories', CategoryViewSet, base_name='Category')

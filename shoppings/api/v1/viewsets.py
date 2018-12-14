@@ -6,7 +6,10 @@ class CategoryViewSet(ModelViewSet):
     serializer_class = CategorySerializer
 
     def get_queryset(self):
-        return Category.objects.all()
+        return Category.objects.filter(user=self.request.user)
+
+    def perform_create(self, serializer):
+        return serializer.save(user=self.request.user)
 
 class ShoppingViewSet(ModelViewSet):
     serializer_class = ShoppingSerializer

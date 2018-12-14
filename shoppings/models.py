@@ -1,14 +1,27 @@
-from django.db import models
 from accounts.models import Account
 from cards.models import Card
+from django.contrib.auth.models import User
+from django.db import models
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
 
 class Category(models.Model):
-    account = models.ForeignKey(Account, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     name = models.CharField(max_length=25)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = ('user', 'name',)
+
+    def __str__(self):
+        return self.name
+
+@receiver(pre_save, sender=Category)
+def before_save(sender, instance, *args, **kwargs):
+    instance.name = instance.name.lower()
 
 class Shopping(models.Model):
     account = models.ForeignKey(Account, on_delete=models.CASCADE)

@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 
 import os
 import datetime
+from decouple import config
+from dj_database_url import parse as dburl
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -21,12 +23,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '&eovgs$tc2%y-94yr+i6vzlgug#4x9#w*vymmqlp$31z1skzv+'
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['expenses-bd.herokuapp.com', 'localhost:8000']
 
 
 # Application definition
@@ -79,24 +81,8 @@ WSGI_APPLICATION = 'expenses.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-#     }
-# }
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.environ.get('DB_NAME', 'expenses_development'),
-        'USER': os.environ.get('DB_USER', 'dennysazevedo'),
-        'PASSWORD': os.environ.get('DB_PASS', ''),
-        'HOST': 'localhost',
-        'PORT': '5432',
-
-    }
-}
+default_dburl = f"postgres://{config('DB_USER')}:{config('DB_PASS')}@{config('DB_HOST')}:5432/{config('DB_NAME')}"
+DATABASES = { 'default': config('DATABASE_URL', default=default_dburl, cast=dburl), }
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (

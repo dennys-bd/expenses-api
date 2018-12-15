@@ -1,5 +1,6 @@
 from accounts.models import Account
 from cards.models import Card
+from datetime import datetime
 from django.contrib.auth.models import User
 from django.db import models
 from django.db.models.signals import pre_save
@@ -41,7 +42,7 @@ class Shopping(models.Model):
 
     local = models.CharField(max_length=25)
     description = models.CharField(max_length=255, null=True, blank=True)
-    date = models.DateTimeField(auto_now_add=True)
+    date = models.DateTimeField(default=datetime.now, blank=True)
     price = models.DecimalField(decimal_places=2, max_digits=11)
     tags = models.CharField(max_length=255, null=True, blank=True)
 

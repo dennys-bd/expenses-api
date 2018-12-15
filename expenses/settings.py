@@ -81,7 +81,7 @@ WSGI_APPLICATION = 'expenses.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
-default_dburl = f"postgres://{config('DB_USER')}:{config('DB_PASS')}@{config('DB_HOST')}:5432/{config('DB_NAME')}"
+default_dburl = f"postgres://{config('DB_USER', default='')}:{config('DB_PASS', default='')}@{config('DB_HOST', default='')}:5432/{config('DB_NAME', default='')}"
 DATABASES = { 'default': config('DATABASE_URL', default=default_dburl, cast=dburl), }
 
 REST_FRAMEWORK = {

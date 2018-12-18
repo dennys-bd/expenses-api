@@ -1,5 +1,6 @@
 astroid==2.1.0
 dj-database-url==0.5.0
+dj-static==0.0.6
 Django==2.1.4
 djangorestframework==3.9.0
 djangorestframework-jwt==1.11.0
@@ -13,4 +14,5 @@ pylint==2.2.2
 python-decouple==3.1
 pytz==2018.7
 six==1.11.0
+static3==0.7.0
 wrapt==1.10.11

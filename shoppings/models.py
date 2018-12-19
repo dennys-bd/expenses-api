@@ -21,7 +21,7 @@ class Category(models.Model):
         return self.name
 
 @receiver(pre_save, sender=Category)
-def before_save(sender, instance, *args, **kwargs):
+def category_before_save(sender, instance, *args, **kwargs):
     instance.name = instance.name.lower()
 
 class Shopping(models.Model):
@@ -49,13 +49,47 @@ class Shopping(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    _inst_price = None
+    _inst_number = None
+
     def __str__(self):
         return self.description
+    
+    @property
+    def inst_price(self):
+        return self._inst_price
+    @inst_price.setter
+    def inst_price(self, value):
+        self._inst_price = value
+
+    @property
+    def inst_number(self):
+        return self._inst_number
+    @inst_number.setter
+    def inst_number(self, value):
+        self._inst_number = value
+
+    # TODO: Fix the due_date montly's improvement
+    def create_installments(self):
+        due_date = self.date
+        for i in range(self._inst_number):
+            Installment.objects.create(shopping=self, due_date=due_date,
+                installment_number=i+1, installment_price=(
+                    self.inst_price or self.price/self._inst_number
+                ))
+                 
+# TODO: Make sure that it occours under a transaction
+# to rollback if installmentes are not created
+@receiver(models.signals.post_save, sender=Shopping)
+def shopping_post_save(sender, instance, created, *args, **kwargs):
+    if created and instance.inst_number is not None:
+        instance.create_installments()
+        
 
 class Installment(models.Model):
     shopping = models.ForeignKey(Shopping, on_delete=models.CASCADE)
     installment_number = models.IntegerField(null=True, blank=True)
-    installments_price = models.DecimalField(decimal_places=2, max_digits=11)
+    installment_price = models.DecimalField(decimal_places=2, max_digits=11)
     due_date = models.DateTimeField()
 
     created_at = models.DateTimeField(auto_now_add=True)

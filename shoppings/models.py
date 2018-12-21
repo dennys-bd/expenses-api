@@ -1,6 +1,7 @@
 from accounts.models import Account
 from cards.models import Card
-from datetime import datetime
+from datetime import date, datetime
+from dateutil.relativedelta import relativedelta
 from django.contrib.auth.models import User
 from django.db import models
 from django.db.models.signals import pre_save
@@ -68,22 +69,18 @@ class Shopping(models.Model):
     @inst_number.setter
     def inst_number(self, value):
         self._inst_number = value
-
-    # TODO: Fix the due_date montly's improvement
-    def create_installments(self):
-        due_date = self.date
-        for i in range(self._inst_number):
-            Installment.objects.create(shopping=self, due_date=due_date,
-                installment_number=i+1, installment_price=(
-                    self.inst_price or self.price/self._inst_number
-                ))
                  
-# TODO: Make sure that it occours under a transaction
-# to rollback if installmentes are not created
 @receiver(models.signals.post_save, sender=Shopping)
 def shopping_post_save(sender, instance, created, *args, **kwargs):
     if created and instance.inst_number is not None:
-        instance.create_installments()
+        due_date = instance.date
+        for i in range(instance.inst_number):
+            instance.installment_set.create(due_date=due_date,
+                installment_number=i+1, installment_price=(
+                    instance.inst_price or instance.price/instance.inst_number
+                )
+            )
+            due_date += relativedelta(months=1)
         
 
 class Installment(models.Model):

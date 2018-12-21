@@ -8,9 +8,9 @@ class AccountSerializer(ModelSerializer):
         fields = ('id', 'name', 'balance')
 
 class UserSerializer(ModelSerializer):
-    # accounts = PrimaryKeyRelatedField(many=True, queryset=Account.objects.all())
+    accounts = AccountSerializer(source='account_set', many=True)
 
     class Meta:
         model = User
-        fields = ('id', 'username')
-        # fields = ('id', 'username', 'accounts')
+        # fields = ('id', 'username')
+        fields = ('id', 'username', 'accounts')

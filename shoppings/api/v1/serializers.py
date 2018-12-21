@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from shoppings.models import Category, Shopping, Installment
+from django.db import transaction
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
@@ -7,23 +8,29 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'user',)
         read_only_fields = ('user',)
 
+class InstallmentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Installment
+        fields = (
+            'id', 'shopping', 'installment_number', 
+            'installment_price', 'due_date'
+        )
+
+
 class ShoppingSerializer(serializers.ModelSerializer):
+    installments = InstallmentSerializer(source='installment_set', many=True, required=False)
     inst_price = serializers.DecimalField(decimal_places=2, max_digits=11, required=False, write_only=True)
     inst_number = serializers.IntegerField(required=False, write_only=True)
+
+    @transaction.atomic
+    def create(self, validated_data):
+        return super().create(validated_data)
 
     class Meta:
         model = Shopping
         fields = (
             'id', 'account', 'card', 'category', 'debt_type',
             'local', 'description', 'date', 'price', 'tags',
-            'inst_price', 'inst_number',
+            'inst_price', 'inst_number', 'installments',
         )
-
-class InstallmentSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Installment
-        fields = (
-            'id', 'shopping', 'installment_number', 
-            'installments_price', 'due_date'
-        )
-
+        read_only_fields = ('installments',)

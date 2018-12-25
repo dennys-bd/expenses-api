@@ -4,7 +4,6 @@ from datetime import date, datetime
 from dateutil.relativedelta import relativedelta
 from django.contrib.auth.models import User
 from django.db import models
-from django.db.models.signals import pre_save
 from django.dispatch import receiver
 
 class Category(models.Model):
@@ -21,7 +20,7 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
-@receiver(pre_save, sender=Category)
+@receiver(models.signals.pre_save, sender=Category)
 def category_before_save(sender, instance, *args, **kwargs):
     instance.name = instance.name.lower()
 

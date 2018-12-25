@@ -4,7 +4,7 @@ from django.core.validators import MaxValueValidator
 
 class Account(models.Model):
     name = models.CharField(max_length=50)
-    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     balance = models.DecimalField(decimal_places=2, max_digits=11)
 
     created_at = models.DateTimeField(auto_now_add=True)

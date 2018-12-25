@@ -19,7 +19,7 @@ class AccountViewSet(ModelViewSet):
     serializer_class = AccountSerializer
 
     def get_queryset(self):
-        return Account.objects.all()
+        return Account.objects.filter(user=self.request.user)
 
     # def list(self, request, *args, **kwargs):
     #     return super().list(request, *args, **kwargs)

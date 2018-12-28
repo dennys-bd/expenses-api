@@ -79,8 +79,17 @@ def shopping_post_save(sender, instance, created, *args, **kwargs):
                     instance.inst_price or instance.price/instance.inst_number
                 )
             )
-            due_date += relativedelta(months=1)
-        
+            due_date += relativedelta(months=1)        
+
+class InstallmentQuerySet(models.QuerySet):
+    def by_date_range(self, previous_date, due_date):
+        return self.filter(date__range=[previous_date, due_date])
+
+    def by_card(self, card):
+        return self.filter(shopping__card=card)
+
+    def by_account(self, account):
+        return self.filter(shopping__account=account)
 
 class Installment(models.Model):
     shopping = models.ForeignKey(Shopping, on_delete=models.CASCADE)
@@ -90,6 +99,12 @@ class Installment(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    objects = models.Manager.from_queryset(InstallmentQuerySet)()
+
+    @property
+    def card(self):
+        return self.shopping.card
     
     class Meta:
         ordering = ['installment_number']
@@ -97,3 +112,5 @@ class Installment(models.Model):
         
     def __str__(self):
         return f'{self.shopping.description} {self.installment_number}/{self.shopping.installment_set.count()}'
+
+    # def by_month():

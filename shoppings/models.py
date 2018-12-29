@@ -24,6 +24,20 @@ class Category(models.Model):
 def category_before_save(sender, instance, *args, **kwargs):
     instance.name = instance.name.lower()
 
+class ShoppingQuerySet(models.QuerySet):
+    def in_date_range(self, previous_date, due_date):
+        return self.filter(date__range=[previous_date, due_date])
+
+    def by_card(self, card):
+        return self.filter(card=card)
+
+    def by_account(self, account):
+        return self.filter(account=account)
+
+    def without_installments(self):
+        return self.filter(installment=None)
+
+
 class Shopping(models.Model):
     account = models.ForeignKey(Account, on_delete=models.CASCADE)
     card = models.ForeignKey(Card, on_delete=models.CASCADE, null=True, blank=True)
@@ -51,6 +65,8 @@ class Shopping(models.Model):
 
     _inst_price = None
     _inst_number = None
+
+    objects = models.Manager.from_queryset(ShoppingQuerySet)()
 
     def __str__(self):
         return self.description
@@ -82,8 +98,8 @@ def shopping_post_save(sender, instance, created, *args, **kwargs):
             due_date += relativedelta(months=1)        
 
 class InstallmentQuerySet(models.QuerySet):
-    def by_date_range(self, previous_date, due_date):
-        return self.filter(date__range=[previous_date, due_date])
+    def in_date_range(self, previous_date, due_date):
+        return self.filter(due_date__range=[previous_date, due_date])
 
     def by_card(self, card):
         return self.filter(shopping__card=card)
@@ -113,4 +129,3 @@ class Installment(models.Model):
     def __str__(self):
         return f'{self.shopping.description} {self.installment_number}/{self.shopping.installment_set.count()}'
 
-    # def by_month():

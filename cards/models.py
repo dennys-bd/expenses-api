@@ -19,9 +19,14 @@ class Card(models.Model):
     def __str__(self):
         return self.name
 
+    @property
     def monthly_shopping(self, month = datetime.now().month, year = datetime.now().year):
         due_date = f"{year}-{month}-{self.best_day}"
         previous_date = f"{year}-{month}-{self.best_day}"
+        return self.shopping_set.in_date_range(previous_date, due_date).without_installments()
 
-        return self.shopping_set.filter(date__range=[previous_date, due_date], installment=None),
-        shoppings.models.Installment.objects.select_related('shopping').filter(shopping__account=self, date__range=[previous_date, due_date])
+    @property
+    def monthly_installments(self, month = datetime.now().month, year = datetime.now().year):
+        due_date = f"{year}-{month}-{self.best_day}"
+        previous_date = f"{year}-{month}-{self.best_day}"
+        return shoppings.models.Installment.objects.by_card(self).in_date_range(previous_date, due_date)

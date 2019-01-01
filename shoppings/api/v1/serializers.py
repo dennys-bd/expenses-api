@@ -8,13 +8,20 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'user',)
         read_only_fields = ('user',)
 
+
 class InstallmentSerializer(serializers.ModelSerializer):
+    description = serializers.SerializerMethodField('desc')
+
     class Meta:
         model = Installment
         fields = (
             'id', 'shopping', 'installment_number', 
-            'installment_price', 'due_date'
+            'installment_price', 'due_date', 'description'
         )
+
+    def desc(self, obj):
+        return obj.__str__()
+
 
 
 class ShoppingSerializer(serializers.ModelSerializer):

@@ -8,5 +8,3 @@ class IncomingViewSet(ModelViewSet):
 
     def get_queryset(self):
         return Incoming.objects.select_related('account').filter(account__user=self.request.user)
-
-        # Room.objects.select_related('house').filter(house__street=xyz)

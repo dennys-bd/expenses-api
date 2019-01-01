@@ -84,6 +84,10 @@ class Shopping(models.Model):
     @inst_number.setter
     def inst_number(self, value):
         self._inst_number = value
+
+    @property
+    def count_installments(self):
+        return self.installment_set.count()
                  
 @receiver(models.signals.post_save, sender=Shopping)
 def shopping_post_save(sender, instance, created, *args, **kwargs):

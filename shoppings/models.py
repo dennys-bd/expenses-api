@@ -85,6 +85,13 @@ class Shopping(models.Model):
     def inst_number(self, value):
         self._inst_number = value
 
+@receiver(models.signals.pre_save, sender=Shopping)
+def shopping_pre_save(sender, instance, *args, **kwargs):
+    if instance.id is not None and instance.inst_number is None:
+        shopping = Shopping.objects.get(pk=instance.id)
+        instance.account.balance += shopping.price
+        instance.account.save()
+
                  
 @receiver(models.signals.post_save, sender=Shopping)
 def shopping_post_save(sender, instance, created, *args, **kwargs):
@@ -96,7 +103,15 @@ def shopping_post_save(sender, instance, created, *args, **kwargs):
                     instance.inst_price or instance.price/instance.inst_number
                 )
             )
-            due_date += relativedelta(months=1)        
+            due_date += relativedelta(months=1)
+    elif instance.inst_number is None:
+        instance.account.balance -= instance.price
+        instance.account.save()
+
+@receiver(models.signals.pre_delete, sender=Shopping)
+def shopping_pre_delete(sender, instance, *args, **kwargs):
+    instance.account.balance += instance.price
+    instance.account.save()
 
 class InstallmentQuerySet(models.QuerySet):
     def in_date_range(self, previous_date, due_date):

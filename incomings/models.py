@@ -21,6 +21,11 @@ def incoming_pre_save(sender, instance, *args, **kwargs):
         instance.account.save()        
         
 @receiver(models.signals.post_save, sender=Incoming)
-def incoming_post_save(sender, instance, created,*args, **kwargs):
+def incoming_post_save(sender, instance, created, *args, **kwargs):
     instance.account.balance += instance.value
+    instance.account.save()
+
+@receiver(models.signals.pre_delete, sender=Incoming)
+def incomming_pre_delete(sender, instance, *args, **kwargs):
+    instance.account.balance -= instance.value
     instance.account.save()

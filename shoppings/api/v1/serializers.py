@@ -1,6 +1,5 @@
 from rest_framework import serializers
 from shoppings.models import Category, Shopping, Installment
-from django.db import transaction
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
@@ -28,10 +27,6 @@ class ShoppingSerializer(serializers.ModelSerializer):
     installments = InstallmentSerializer(source='installment_set', many=True, required=False)
     inst_price = serializers.DecimalField(decimal_places=2, max_digits=11, required=False, write_only=True)
     inst_number = serializers.IntegerField(required=False, write_only=True)
-
-    @transaction.atomic
-    def create(self, validated_data):
-        return super().create(validated_data)
 
     class Meta:
         model = Shopping
